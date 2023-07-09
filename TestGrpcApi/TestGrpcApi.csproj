@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Protobuf Include="..\Protos\TestGrpcInterface\testgrpc.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\Protos\TestGrpcInterface\testgrpc2.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\Protos\TestGrpcApi\greet.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+</Project>
