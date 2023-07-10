@@ -12,12 +12,12 @@ namespace TestGrpcClientConsoleApp
 
             using GrpcChannel channel = GrpcChannel.ForAddress(uriAddress);
             await channel.ConnectAsync();
-            Console.WriteLine($"{channel.State}");
+            Console.WriteLine($"channel.State:{channel.State}");
 
             await TestIteration(channel);
             TestTasks(channel);
 
-            Console.WriteLine($"{channel.State}");
+            Console.WriteLine($"channel.State:{channel.State}");
             Console.ReadLine();
         }
 
@@ -64,9 +64,9 @@ namespace TestGrpcClientConsoleApp
 
             for (int i = 0; i < taskCount; i++)
             {
+                var a = i;
                 Task.Run(async () =>
                 {
-                    var a = i;
                     var b = 0;
 
                     Stopwatch swClient = new();
