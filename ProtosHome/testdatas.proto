@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "TestDatasNameSpace";
+
+package testdatas;
+
+// The greeting service definition.
+service TestDatasSer {
+  // Command
+  rpc Command (TestDataCommandRequest) returns (TestDataCommandReply);
+}
+
+message TestDataCommandRequest{
+}
+
+message TestDataCommandReply{
+	optional string message=1;
+	repeated string detail=2;	
+	repeated string roles=3;	
+  map<string, int32> g = 7;
+}

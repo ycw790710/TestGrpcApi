@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{E8C3CF7D-34BA-4B8B-A881-11AD8E831B79}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GrpcProtoTemplateVSIXProject</RootNamespace>
+    <AssemblyName>GrpcProtoTemplateVSIXProject</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Controls\ComboBoxDraw.cs" />
+    <Compile Include="Controls\FlowLayoutPanelFillColumn.cs" />
+    <Compile Include="Controls\ProtoCsharpNamespaceUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoCsharpNamespaceUserControl.Designer.cs">
+      <DependentUpon>ProtoCsharpNamespaceUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoFieldItemUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoFieldItemUserControl.Designer.cs">
+      <DependentUpon>ProtoFieldItemUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FormLayout.cs" />
+    <Compile Include="Controls\ProtoMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoMessageForm.Designer.cs">
+      <DependentUpon>ProtoMessageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoMessageUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoMessageUserControl.Designer.cs">
+      <DependentUpon>ProtoMessageUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoMethodItemUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoMethodItemUserControl.Designer.cs">
+      <DependentUpon>ProtoMethodItemUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoPackageServicesUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoPackageServicesUserControl.Designer.cs">
+      <DependentUpon>ProtoPackageServicesUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoPackageUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoPackageUserControl.Designer.cs">
+      <DependentUpon>ProtoPackageUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoServiceItemUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoServiceItemUserControl.Designer.cs">
+      <DependentUpon>ProtoServiceItemUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProtoServiceMethodsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProtoServiceMethodsUserControl.Designer.cs">
+      <DependentUpon>ProtoServiceMethodsUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GetControls.cs" />
+    <Compile Include="Controls\TextBoxClearButton.cs" />
+    <Compile Include="Controls\TextBoxValidating.cs" />
+    <Compile Include="Datas\ProtoMessageContent.cs" />
+    <Compile Include="Datas\ProtoMessageFieldContent.cs" />
+    <Compile Include="Datas\ProtoMessageFieldLabel.cs" />
+    <Compile Include="Datas\ProtoMessageFieldType.cs" />
+    <Compile Include="Datas\ProtoMethodContent.cs" />
+    <Compile Include="Datas\ProtoPackageContent.cs" />
+    <Compile Include="Datas\ProtoReplyContent.cs" />
+    <Compile Include="Datas\ProtoRequestContent.cs" />
+    <Compile Include="Datas\ProtoServiceContent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GrpcProtoTemplateVSIXProjectPackage.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UserInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInputForm.Designer.cs">
+      <DependentUpon>UserInputForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WizardImplementation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="key.snk">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VisualStudio.TemplateWizardInterface">
+      <Version>17.5.33428.366</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.6.2164" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\ProtoCsharpNamespaceUserControl.resx">
+      <DependentUpon>ProtoCsharpNamespaceUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoFieldItemUserControl.resx">
+      <DependentUpon>ProtoFieldItemUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoMessageForm.resx">
+      <DependentUpon>ProtoMessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoMessageUserControl.resx">
+      <DependentUpon>ProtoMessageUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoMethodItemUserControl.resx">
+      <DependentUpon>ProtoMethodItemUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoPackageServicesUserControl.resx">
+      <DependentUpon>ProtoPackageServicesUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoPackageUserControl.resx">
+      <DependentUpon>ProtoPackageUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoServiceItemUserControl.resx">
+      <DependentUpon>ProtoServiceItemUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProtoServiceMethodsUserControl.resx">
+      <DependentUpon>ProtoServiceMethodsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInputForm.resx">
+      <DependentUpon>UserInputForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GrpcProtoItemTemplate\GrpcProtoItemTemplate.csproj">
+      <Project>{7BC56477-1BB6-43CA-917E-928E3CA886C2}</Project>
+      <Name>GrpcProtoItemTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

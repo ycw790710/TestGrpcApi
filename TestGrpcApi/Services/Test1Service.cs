@@ -3,10 +3,10 @@ using TestGrpcInterface;
 
 namespace TestGrpcApi.Services
 {
-    public class TestService : TestGrpc.TestGrpcBase
+    public class Test1Service : TestGrpc.TestGrpcBase
     {
-        private readonly ILogger<TestService> _logger;
-        public TestService(ILogger<TestService> logger)
+        private readonly ILogger<Test1Service> _logger;
+        public Test1Service(ILogger<Test1Service> logger)
         {
             _logger = logger;
         }

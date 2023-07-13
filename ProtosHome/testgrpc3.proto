@@ -1,0 +1,42 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "TestNameSpace";
+
+package testgrpc3;
+
+
+// This is TestService
+service TestService {
+// This is TestMethod
+rpc TestMethod (TestRequest) returns (TestReply);
+
+}
+// This is TestRequest
+message TestRequest {
+// this is id
+ int64 id = 1;
+}
+
+// This is TestReply
+message TestReply {
+// this is name
+ string name = 1;
+// this is items
+repeated TestItem items = 2;
+}
+// this is TestItem
+message TestItem {
+// this is name
+ string name = 1;
+// this is item
+ TestItem2 item = 2;
+}
+// this is TestItem2
+message TestItem2 {
+// this is name
+ string name = 1;
+}
+
+
+
+

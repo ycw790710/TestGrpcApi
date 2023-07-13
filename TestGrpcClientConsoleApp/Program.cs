@@ -1,6 +1,7 @@
 ﻿using Grpc.Net.Client;
 using System.Diagnostics;
 using TestGrpcApi;
+using TestNameSpace;
 
 namespace TestGrpcClientConsoleApp
 {
@@ -15,6 +16,7 @@ namespace TestGrpcClientConsoleApp
             Console.WriteLine($"channel.State:{channel.State}");
 
             await TestIteration(channel);
+            await TestIteration2(channel);
             TestTasks(channel);
 
             Console.WriteLine($"channel.State:{channel.State}");
@@ -36,6 +38,31 @@ namespace TestGrpcClientConsoleApp
             {
                 var reply = await client.SayHelloAsync(new HelloRequest { Name = "GreeterClient" });
                 var msg = reply.Message;
+                Interlocked.Increment(ref count);
+                Console.Write($"\rcount：{count}");
+            }
+            Console.WriteLine();
+            sw.Stop();
+
+            Console.WriteLine($"Elapsed Milliseconds:{sw.ElapsedMilliseconds}");
+            Console.WriteLine($"count:{count}");
+            Console.WriteLine();
+        }
+
+        static async Task TestIteration2(GrpcChannel channel)
+        {
+            Console.WriteLine($"---{nameof(TestIteration2)}---");
+                        
+            var client = new TestService.TestServiceClient(channel);
+
+            Stopwatch sw = new();
+            int count = 0;
+            int targetMilliseconds = 3000;
+
+            sw.Start();
+            while (sw.ElapsedMilliseconds <= targetMilliseconds)
+            {
+                var reply = await client.TestMethodAsync(new TestRequest { Id = count });
                 Interlocked.Increment(ref count);
                 Console.Write($"\rcount：{count}");
             }

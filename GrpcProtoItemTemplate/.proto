@@ -1,0 +1,7 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "$csharp_namespace$";
+
+package $package$;
+
+$package_content$

@@ -11,9 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <Protobuf Include="..\Protos\TestGrpcInterface\testgrpc.proto" GrpcServices="Server" />
-	  <Protobuf Include="..\Protos\TestGrpcInterface\testgrpc2.proto" GrpcServices="Server" />
-	  <Protobuf Include="..\Protos\TestGrpcApi\greet.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\ProtosHome\testgrpc.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\ProtosHome\testgrpc2.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\ProtosHome\greet.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\ProtosHome\testdatas.proto" GrpcServices="Server" />
+	  <Protobuf Include="..\ProtosHome\testgrpc3.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

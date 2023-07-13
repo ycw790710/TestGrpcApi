@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Grpc Proto</Name>
+    <Description>名稱</Description>
+    <Icon>GrpcProtoItemTemplate.ico</Icon>
+    <ProjectType>CSharp</ProjectType>
+    <DefaultName>packageName</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+    </References>
+	<ProjectItem SubType="Custom"  TargetFileName="$rootname$" ReplaceParameters="true">.proto</ProjectItem>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>GrpcProtoTemplateVSIXProject, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=f82eba5df69f28c3</Assembly>
+    <FullClassName>GrpcProtoTemplateVSIXProject.WizardImplementation</FullClassName>
+  </WizardExtension>
+</VSTemplate>
