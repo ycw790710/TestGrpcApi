@@ -1,8 +1,10 @@
 ﻿using Grpc.Core;
+using Microsoft.AspNetCore.Authorization;
 using TestNameSpace;
 
 namespace TestGrpcApi.Services
 {
+    [Authorize]
     public class Test3Service : TestService.TestServiceBase
     {
         private readonly ILogger<Test3Service> _logger;

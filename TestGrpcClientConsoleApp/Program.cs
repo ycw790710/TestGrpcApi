@@ -1,7 +1,12 @@
-﻿using Grpc.Net.Client;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
 using System.Diagnostics;
 using TestGrpcApi;
 using TestNameSpace;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace TestGrpcClientConsoleApp
 {
@@ -11,7 +16,16 @@ namespace TestGrpcClientConsoleApp
         {
             var uriAddress = "https://localhost:52345/";
 
-            using GrpcChannel channel = GrpcChannel.ForAddress(uriAddress);
+            var token = GetToken(GetSecretKey());
+            var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
+            {
+                metadata.Add("Authorization", $"Bearer {token}");
+            });
+
+            using GrpcChannel channel = GrpcChannel.ForAddress(uriAddress, new GrpcChannelOptions
+            {
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+            });
             await channel.ConnectAsync();
             Console.WriteLine($"channel.State: {channel.State}");
             Console.WriteLine();
@@ -21,6 +35,40 @@ namespace TestGrpcClientConsoleApp
             TestTasks(channel);
             Console.Read();
         }
+
+        static byte[] GetSecretKey()
+        {
+            var bytes = Encoding.UTF8.GetBytes("askjdhf98asdf9h25khns;lzdfh98sddfbu;12kjaiodhjgo;aihew4t-89q34nop;asdok;fg");
+            Array.Resize(ref bytes, 64);
+            return bytes;
+        }
+
+        static string GetToken(byte[] secretKey)
+        {
+            var signingKey = new SymmetricSecurityKey(secretKey);
+
+            var claims = CreateClaims();
+
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: "TestGrpc",
+                audience: "TestGrpc",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(1),
+                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha512)
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        }
+
+        static IEnumerable<Claim> CreateClaims()
+        {
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, "testApiClient"),
+        };
+            return claims;
+        }
+
 
         static async Task TestIteration(GrpcChannel channel)
         {
