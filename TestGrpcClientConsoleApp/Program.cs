@@ -143,8 +143,8 @@ namespace TestGrpcClientConsoleApp
             int readyCount = 0;
             int finishedCount = 0;
 
-            object _lockCreateClientMilliseconds = new();
-            long createClientMilliseconds = 0;
+            object _lockCreateClientTicks = new();
+            long createClientTicks = 0;
 
             for (int i = 0; i < taskCount; i++)
             {
@@ -154,16 +154,14 @@ namespace TestGrpcClientConsoleApp
                     var dataId = 0;
 
                     Stopwatch swClient = new();
-                    swClient.Start();
-                    var client = new Greeter.GreeterClient(channel);
-                    swClient.Stop();
-                    lock(_lockCreateClientMilliseconds)
-                        createClientMilliseconds += swClient.ElapsedMilliseconds;
-
                     Interlocked.Increment(ref readyCount);
                     manualResetEventSlim.Wait();
                     while (sw.ElapsedMilliseconds <= targetMilliseconds)
                     {
+                        swClient.Start();
+                        var client = new Greeter.GreeterClient(channel);
+                        swClient.Stop();
+
                         var id = $"{processId},{dataId}";
                         var reply = await client.SayHelloAsync(new HelloRequest { Name = $"Msg,{id}" });
                         var msg = reply.Message;
@@ -177,6 +175,8 @@ namespace TestGrpcClientConsoleApp
                         Interlocked.Increment(ref processedCount);
                         dataId++;
                     }
+                    lock (_lockCreateClientTicks)
+                        createClientTicks += swClient.ElapsedTicks;
                     Interlocked.Increment(ref finishedCount);
                 });
             }
@@ -189,7 +189,6 @@ namespace TestGrpcClientConsoleApp
                 Console.Write($"\r準備task進度: {readyCount}/{taskCount}");
             }
             Console.WriteLine();
-            Console.WriteLine($"create client milliseconds: {createClientMilliseconds}");
 
             sw.Start();
             manualResetEventSlim.Set();
@@ -202,6 +201,7 @@ namespace TestGrpcClientConsoleApp
             Console.WriteLine();
             sw.Stop();
 
+            Console.WriteLine($"create client milliseconds: {createClientTicks * 1000 / Stopwatch.Frequency}");
             Console.WriteLine($"Elapsed Milliseconds: {sw.ElapsedMilliseconds}");
             Console.WriteLine($"success count: {record_successCount}");
             Console.WriteLine($"fail count: {record_failCount}");
