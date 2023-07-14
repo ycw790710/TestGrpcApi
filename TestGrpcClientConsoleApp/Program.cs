@@ -138,7 +138,7 @@ namespace TestGrpcClientConsoleApp
             int targetMilliseconds = 3000;
             ManualResetEventSlim manualResetEventSlim = new(false);
             int taskCount = 100;
-            ThreadPool.SetMinThreads(101, 101);// here for test
+            ThreadPool.SetMinThreads(101, 3);// here for test
 
             int readyCount = 0;
             int finishedCount = 0;
