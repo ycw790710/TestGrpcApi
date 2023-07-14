@@ -10,7 +10,7 @@
   <TemplateContent>
     <References>
     </References>
-	<ProjectItem SubType="Custom"  TargetFileName="$rootname$" ReplaceParameters="true">.proto</ProjectItem>
+	<ProjectItem TargetFileName="$rootname$" ReplaceParameters="true">.proto</ProjectItem>
   </TemplateContent>
   <WizardExtension>
     <Assembly>GrpcProtoTemplateVSIXProject, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=f82eba5df69f28c3</Assembly>
