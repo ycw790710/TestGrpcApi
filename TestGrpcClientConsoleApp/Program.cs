@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Net.Http;
 
 namespace TestGrpcClientConsoleApp
 {
@@ -22,9 +23,19 @@ namespace TestGrpcClientConsoleApp
                 metadata.Add("Authorization", $"Bearer {token}");
             });
 
+            var handler = new SocketsHttpHandler
+            {
+                PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                KeepAlivePingDelay = TimeSpan.FromSeconds(30),
+                KeepAlivePingTimeout = TimeSpan.FromSeconds(15),
+                EnableMultipleHttp2Connections = true,
+            };
+            //handler.SslOptions.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls13;
+
             using GrpcChannel channel = GrpcChannel.ForAddress(uriAddress, new GrpcChannelOptions
             {
-                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials),
+                HttpHandler = handler
             });
             await channel.ConnectAsync();
             Console.WriteLine($"channel.State: {channel.State}");
