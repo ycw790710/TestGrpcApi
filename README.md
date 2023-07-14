@@ -1,5 +1,8 @@
 # TestGrpcApi
 
+### client call server 測試
+![外觀](sample3.png)
+
 ## VSIX
 ![外觀](sample.png)
 ![輸出](sample2.png)

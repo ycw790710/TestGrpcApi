@@ -13,24 +13,25 @@ namespace TestGrpcClientConsoleApp
 
             using GrpcChannel channel = GrpcChannel.ForAddress(uriAddress);
             await channel.ConnectAsync();
-            Console.WriteLine($"channel.State:{channel.State}");
+            Console.WriteLine($"channel.State: {channel.State}");
+            Console.WriteLine();
 
             await TestIteration(channel);
             await TestIteration2(channel);
             TestTasks(channel);
-
-            Console.WriteLine($"channel.State:{channel.State}");
-            Console.ReadLine();
+            Console.Read();
         }
 
         static async Task TestIteration(GrpcChannel channel)
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"---{nameof(TestIteration)}---");
+            Console.ResetColor();
 
             var client = new Greeter.GreeterClient(channel);
 
             Stopwatch sw = new();
-            int count = 0;
+            int processedCount = 0;
             int targetMilliseconds = 3000;
 
             sw.Start();
@@ -38,97 +39,109 @@ namespace TestGrpcClientConsoleApp
             {
                 var reply = await client.SayHelloAsync(new HelloRequest { Name = "GreeterClient" });
                 var msg = reply.Message;
-                Interlocked.Increment(ref count);
-                Console.Write($"\rcount：{count}");
+                Interlocked.Increment(ref processedCount);
+                Console.Write($"\rcount: {processedCount}");
             }
             Console.WriteLine();
             sw.Stop();
 
-            Console.WriteLine($"Elapsed Milliseconds:{sw.ElapsedMilliseconds}");
-            Console.WriteLine($"count:{count}");
+            Console.WriteLine($"Elapsed Milliseconds: {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"processed count: {processedCount}");
             Console.WriteLine();
         }
 
         static async Task TestIteration2(GrpcChannel channel)
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"---{nameof(TestIteration2)}---");
-                        
+            Console.ResetColor();
+
             var client = new TestService.TestServiceClient(channel);
 
             Stopwatch sw = new();
-            int count = 0;
+            int processedCount = 0;
             int targetMilliseconds = 3000;
 
             sw.Start();
             while (sw.ElapsedMilliseconds <= targetMilliseconds)
             {
-                var reply = await client.TestMethodAsync(new TestRequest { Id = count });
-                Interlocked.Increment(ref count);
-                Console.Write($"\rcount：{count}");
+                var reply = await client.TestMethodAsync(new TestRequest { Id = processedCount });
+                Interlocked.Increment(ref processedCount);
+                Console.Write($"\rcount: {processedCount}");
             }
             Console.WriteLine();
             sw.Stop();
 
-            Console.WriteLine($"Elapsed Milliseconds:{sw.ElapsedMilliseconds}");
-            Console.WriteLine($"count:{count}");
+            Console.WriteLine($"Elapsed Milliseconds: {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"processed count: {processedCount}");
             Console.WriteLine();
         }
 
         static void TestTasks(GrpcChannel channel)
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"---{nameof(TestTasks)}---");
+            Console.ResetColor();
 
+            int record_successCount = 0;
+            int record_failCount = 0;
             Stopwatch sw = new();
-            int count = 0;
+            int processedCount = 0;
             int targetMilliseconds = 3000;
             ManualResetEventSlim manualResetEventSlim = new(false);
             int taskCount = 100;
-            ThreadPool.SetMinThreads(taskCount, taskCount);// here for test
+            ThreadPool.SetMinThreads(101, 101);// here for test
+
             int readyCount = 0;
             int finishedCount = 0;
 
             object _lockCreateClientMilliseconds = new();
-            long createClientTicks = 0;
+            long createClientMilliseconds = 0;
 
             for (int i = 0; i < taskCount; i++)
             {
-                var a = i;
+                var processId = i;
                 Task.Run(async () =>
                 {
-                    var b = 0;
+                    var dataId = 0;
 
                     Stopwatch swClient = new();
                     swClient.Start();
                     var client = new Greeter.GreeterClient(channel);
                     swClient.Stop();
                     lock(_lockCreateClientMilliseconds)
-                        createClientTicks += swClient.ElapsedTicks;
+                        createClientMilliseconds += swClient.ElapsedMilliseconds;
 
                     Interlocked.Increment(ref readyCount);
                     manualResetEventSlim.Wait();
                     while (sw.ElapsedMilliseconds <= targetMilliseconds)
                     {
-                        var id = $"{a},{b}";
+                        var id = $"{processId},{dataId}";
                         var reply = await client.SayHelloAsync(new HelloRequest { Name = $"Msg,{id}" });
                         var msg = reply.Message;
                         if (!msg.Contains(id))
+                        {
+                            Interlocked.Increment(ref record_failCount);
                             break;
-                        Interlocked.Increment(ref count);
-                        b++;
+                        }
+                        Interlocked.Increment(ref record_successCount);
+
+                        Interlocked.Increment(ref processedCount);
+                        dataId++;
                     }
                     Interlocked.Increment(ref finishedCount);
                 });
             }
 
-            Console.WriteLine($"tasks count:{taskCount}");
+            Console.WriteLine($"tasks count: {taskCount}");
             while (readyCount < taskCount)
             {
                 var pre = readyCount;
                 SpinWait.SpinUntil(() => pre != readyCount || readyCount == taskCount);
-                Console.Write($"\r準備task進度：{readyCount}/{taskCount}");
+                Console.Write($"\r準備task進度: {readyCount}/{taskCount}");
             }
             Console.WriteLine();
-            Console.WriteLine($"create client ticks:{createClientTicks}");
+            Console.WriteLine($"create client milliseconds: {createClientMilliseconds}");
 
             sw.Start();
             manualResetEventSlim.Set();
@@ -136,14 +149,17 @@ namespace TestGrpcClientConsoleApp
             {
                 var pre = finishedCount;
                 SpinWait.SpinUntil(() => pre != finishedCount || finishedCount == taskCount);
-                Console.Write($"\r完成task進度：{finishedCount}/{taskCount}");
+                Console.Write($"\r完成task進度: {finishedCount}/{taskCount}");
             }
             Console.WriteLine();
             sw.Stop();
 
-            Console.WriteLine($"Elapsed Milliseconds:{sw.ElapsedMilliseconds}");
-            Console.WriteLine($"count:{count}");
+            Console.WriteLine($"Elapsed Milliseconds: {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"success count: {record_successCount}");
+            Console.WriteLine($"fail count: {record_failCount}");
+            Console.WriteLine($"processed count: {processedCount}");
             Console.WriteLine();
+
         }
     }
 }
