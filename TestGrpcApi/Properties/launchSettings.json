@@ -3,10 +3,11 @@
     "TestGrpcApi": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:52345;http://localhost:52346"
+      "applicationUrl": "https://localhost:52345;"
     }
   }
 }
