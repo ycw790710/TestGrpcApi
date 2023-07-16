@@ -51,9 +51,11 @@ namespace TestGrpcClientConsoleApp
             await TestGrpcIteration(channel);
             await TestGrpcIteration(channel);
             await TestControllerIteration();
-            await TestControllerIteration();
+            await TestGrpcIteration3(channel);
             TestGrpcTasks(channel);
-            TestGrpcTasks(channel);
+            await TestGrpcIteration2();
+
+            Console.WriteLine("---END---");
             Console.Read();
         }
 
@@ -95,7 +97,7 @@ namespace TestGrpcClientConsoleApp
         static async Task TestGrpcIteration(GrpcChannel channel)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"---{nameof(TestGrpcIteration)}---");
+            Console.WriteLine($"---重複使用channel和client---");
             Console.ResetColor();
 
             var client = new Greeter.GreeterClient(channel);
@@ -120,10 +122,82 @@ namespace TestGrpcClientConsoleApp
             Console.WriteLine();
         }
 
+        static async Task TestGrpcIteration2()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"---不重複使用channel和client---");
+            Console.ResetColor();
+
+            Stopwatch sw = new();
+            int processedCount = 0;
+            int targetMilliseconds = 3000;
+
+            sw.Start();
+            while (sw.ElapsedMilliseconds <= targetMilliseconds)
+            {
+                var uriAddress = "https://localhost:52346/";
+
+                var token = GetToken(GetSecretKey());
+                var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
+                {
+                    metadata.Add("Authorization", $"Bearer {token}");
+                });
+
+                var handler = new SocketsHttpHandler();
+                handler.SslOptions.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls13;
+
+                using GrpcChannel channel = GrpcChannel.ForAddress(uriAddress, new GrpcChannelOptions
+                {
+                    Credentials = ChannelCredentials.Create(new SslCredentials(), credentials),
+                    HttpHandler = handler
+                });
+
+                var client = new Greeter.GreeterClient(channel);
+
+                var reply = await client.SayHelloAsync(new HelloRequest { Name = "GreeterClient" });
+                var msg = reply.Message;
+                Interlocked.Increment(ref processedCount);
+                Console.Write($"\rcount: {processedCount}");
+            }
+            Console.WriteLine();
+            sw.Stop();
+
+            Console.WriteLine($"Elapsed Milliseconds: {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"processed count: {processedCount}");
+            Console.WriteLine();
+        }
+
+        static async Task TestGrpcIteration3(GrpcChannel channel)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"---重複使用channel, 不重複使用client---");
+            Console.ResetColor();
+
+            Stopwatch sw = new();
+            int processedCount = 0;
+            int targetMilliseconds = 3000;
+
+            sw.Start();
+            while (sw.ElapsedMilliseconds <= targetMilliseconds)
+            {
+                var client = new Greeter.GreeterClient(channel);
+                var reply = await client.SayHelloAsync(new HelloRequest { Name = "GreeterClient" });
+                var msg = reply.Message;
+                Interlocked.Increment(ref processedCount);
+                Console.Write($"\rcount: {processedCount}");
+            }
+            Console.WriteLine();
+            sw.Stop();
+
+            Console.WriteLine($"Elapsed Milliseconds: {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"processed count: {processedCount}");
+            Console.WriteLine();
+        }
+
         static async Task TestControllerIteration()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"---{nameof(TestControllerIteration)}---");
+            Console.WriteLine($"---對照組, 重複使用httpClient = 重複使用channel和client---");
             Console.ResetColor();
 
             var handler = new HttpClientHandler()
@@ -168,7 +242,7 @@ namespace TestGrpcClientConsoleApp
         static void TestGrpcTasks(GrpcChannel channel)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"---{nameof(TestGrpcTasks)}---");
+            Console.WriteLine($"---並行處理, 重複使用channel, 不重複使用client---");
             Console.ResetColor();
 
             int record_successCount = 0;
