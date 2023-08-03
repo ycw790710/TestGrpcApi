@@ -302,6 +302,7 @@ namespace TestGrpcClientConsoleApp
                 SpinWait.SpinUntil(() => pre != readyCount || readyCount == taskCount);
                 Console.Write($"\r準備task進度: {readyCount}/{taskCount}");
             }
+            Console.Write($"\r準備task進度: {readyCount}/{taskCount}");
             Console.WriteLine();
 
             sw.Start();
@@ -312,6 +313,7 @@ namespace TestGrpcClientConsoleApp
                 SpinWait.SpinUntil(() => pre != finishedCount || finishedCount == taskCount);
                 Console.Write($"\r完成task進度: {finishedCount}/{taskCount}");
             }
+            Console.Write($"\r完成task進度: {finishedCount}/{taskCount}");
             Console.WriteLine();
             sw.Stop();
 
