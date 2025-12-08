@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using TestGrpcApi.Services;
+
 
 namespace TestGrpcApi
 {
@@ -51,23 +56,22 @@ namespace TestGrpcApi
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Scheme = "Bearer",
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
+
+                c.AddSecurityRequirement(document =>
+                    new OpenApiSecurityRequirement
                     {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] {}
-                }
+            {
+                new OpenApiSecuritySchemeReference("Bearer", document),
+                new List<string>()
+            }
+                    }
+                );
             });
-            });
+
+            // Test
+            Write_Test_Token();
 
             var app = builder.Build();
 
@@ -105,6 +109,30 @@ namespace TestGrpcApi
         {
             var port = configuration.GetValue<int>("Ports:Grpcs");
             return port;
+        }
+
+        static void Write_Test_Token()
+        {
+            var key = GetSecretKey();
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("sub", "testuser") }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = "TestGrpc",
+                Audience = "TestGrpc",
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256
+                )
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
+
+            Console.WriteLine("JWT Token:");
+            Console.WriteLine(jwt);
         }
     }
 }
